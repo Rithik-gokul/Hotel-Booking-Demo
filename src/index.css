@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', sans-serif;
+}
+
+.conti{
+  height: 100vh;
+}
+
+.heigh{
+  height:100%
+}
+
+.navbar{
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.hover:hover{
+  border-radius:2px ;
+}
+
+.login{
+ color: hsl(245, 76%, 66%);
+ border: 1px solid black;
+ border-radius: 5px;
+}
+
+.signup{
+  background-color: hsl(245, 76%, 66%);
+  border-radius: 3px;
+}
+
+.signup:hover{
+  background-color: rgb(76 29 149);
+}
+
+.signup:active{
+  background-color: rgb(167 139 250);;
+}
+
+.Filter{
+  border-radius:8px ;
+
+}
+
+.box{
+  border: 2px solid gray;
+  border-style:  hidden hidden hidden solid;
+}
+
+.box1{
+  border: 2px solid gray;
+  border-style:  hidden solid hidden solid;
+}
+
+#fname{
+  border: 2px solid hsl(245, 76%, 66%); 
+  border-radius:3px ;  
+}
+
+.selection{
+  font-weight: 700;
+  font-size: large;
+}
+
+.translate:hover{
+  transform: scale(1.5);
+  transition: 1.5s;
+}
+
+.price{
+  color:hsl(245, 76%, 66%);
+}
+
+.property{
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
