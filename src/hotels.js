@@ -7,8 +7,8 @@ export default function Hotels(p) {
   }
   return (
     <div>
-        <div className="property bg-white w-72 flex-col my-6 ">
-                <img src={p.imageUrl} alt="hotel" className='max-h-32 w-96 translate' />
+        <div className="property bg-white w-72 flex-col my-6 translate">
+                <img src={p.imageUrl} alt="hotel" className='max-h-32 w-96 ' />
                 <hr />
                 <div className='flex justify-between p-6 items-center '>
                 <div>
