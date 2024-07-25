@@ -12,6 +12,8 @@ export default function Header() {
         price:"",
         property:""
     });
+    const [searchText, setSearchText] = useState('');
+    const foundHotels = filterHotel(Hotels, searchText);
 
     const hotel = hotelinfo.map(room => {
         return(<Hotels key={room.id} {...room}  />)
@@ -108,8 +110,8 @@ export default function Header() {
                 <p className="text-4xl font-bold">Search properties to rent</p>
                 <div className="flex">
                 <label htmlFor="fname"></label>
-                <input type="text" id="fname" name="fname" placeholder='' />
-                <button className="signup text-white p-1 m-1" onClick={search}> Search </button>
+                <input type="text" id="fname" name="fname" placeholder='' value={searchText}  onchange = {newText => setSearchText(newText)} />
+                <button className="signup text-white p-1 m-1" onClick={Reset}> Search </button>
                 </div>
             </div>
         </div>
