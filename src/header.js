@@ -108,8 +108,8 @@ export default function Header() {
                 <p className="text-4xl font-bold">Search properties to rent</p>
                 <div className="flex">
                 <label htmlFor="fname"></label>
-                <input type="text" id="fname" name="fname" placeholder='Click reset to remove filters' />
-                <button className="signup text-white p-1 m-1" onClick={Reset}> Reset </button>
+                <input type="text" id="fname" name="fname" placeholder='' />
+                <button className="signup text-white p-1 m-1" onClick={search}> Search </button>
                 </div>
             </div>
         </div>
