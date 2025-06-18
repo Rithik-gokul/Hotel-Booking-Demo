@@ -5,9 +5,8 @@ export interface Hotel {
   price: number;
   rating: number;
   image: string;
-  amenities: string[];
   description: string;
-  reviews: Review[];
+  amenities: string[];
 }
 
 export interface Review {
@@ -20,7 +19,7 @@ export interface Review {
 
 export interface FilterOptions {
   priceRange: [number, number];
-  rating: number | null;
-  amenities: string[];
+  minRating: number;
   searchQuery: string;
+  selectedAmenities: string[];
 } 

@@ -1,7 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardMedia, Typography, Box, Chip, Rating, Button, Stack } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Box, Chip, Button } from '@mui/material';
 import { Hotel } from '../types/hotel';
-import { LocationOn, AttachMoney, Star } from '@mui/icons-material';
+import { Star } from '@mui/icons-material';
 
 interface HotelCardProps {
   hotel: Hotel;
@@ -10,15 +9,22 @@ interface HotelCardProps {
 
 const HotelCard = ({ hotel, onBook }: HotelCardProps) => {
   return (
-    <Card sx={{ 
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-    }}>
+    <Card 
+      sx={{ 
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+        },
+      }}
+    >
       <Box sx={{ position: 'relative' }}>
         <CardMedia
           component="img"
-          height="200"
+          height="240"
           image={hotel.image}
           alt={hotel.name}
           sx={{
@@ -26,11 +32,11 @@ const HotelCard = ({ hotel, onBook }: HotelCardProps) => {
             '&::after': {
               content: '""',
               position: 'absolute',
-              bottom: 0,
+              top: 0,
               left: 0,
               right: 0,
-              height: '50%',
-              background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)',
+              bottom: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)',
             },
           }}
         />
@@ -39,73 +45,88 @@ const HotelCard = ({ hotel, onBook }: HotelCardProps) => {
             position: 'absolute',
             top: 16,
             right: 16,
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            borderRadius: 2,
-            px: 1,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
+            bgcolor: 'rgba(0, 0, 0, 0.6)',
+            color: 'white',
+            px: 1.5,
             py: 0.5,
+            borderRadius: 2,
+          }}
+        >
+          <Star sx={{ color: '#FFD700', fontSize: 20 }} />
+          <Typography variant="subtitle2" fontWeight="bold">
+            {hotel.rating}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            bgcolor: 'rgba(0, 0, 0, 0.6)',
+            color: 'white',
+            px: 1.5,
+            py: 0.5,
+            borderRadius: 2,
             display: 'flex',
             alignItems: 'center',
             gap: 0.5,
           }}
         >
-          <Star sx={{ color: '#FFD700', fontSize: 20 }} />
-          <Typography variant="subtitle1" fontWeight="bold">
-            {hotel.rating}
+          <Typography variant="subtitle2" fontWeight="bold">
+            ${hotel.price}
           </Typography>
+          <Typography variant="body2">/night</Typography>
         </Box>
       </Box>
-      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-          {hotel.name}
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <LocationOn color="action" sx={{ fontSize: 20 }} />
-          <Typography variant="body2" color="text.secondary">
+      <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2, p: 3 }}>
+        <Box>
+          <Typography variant="h6" component="h2" gutterBottom fontWeight="600">
+            {hotel.name}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
             {hotel.location}
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <AttachMoney color="primary" />
-          <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
-            {hotel.price}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            /night
-          </Typography>
-        </Box>
-        <Typography variant="body2" color="text.secondary" sx={{ 
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          mb: 1
-        }}>
+        
+        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
           {hotel.description}
         </Typography>
-        <Stack direction="row" spacing={0.5} sx={{ flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
-          {hotel.amenities.map((amenity, index) => (
+
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {hotel.amenities.map((amenity) => (
             <Chip
-              key={index}
+              key={amenity}
               label={amenity}
               size="small"
               sx={{
                 borderRadius: 1,
-                backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
                 color: 'primary.main',
                 '&:hover': {
-                  backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                  backgroundColor: 'rgba(37, 99, 235, 0.2)',
                 },
               }}
             />
           ))}
-        </Stack>
+        </Box>
+
         <Button
           variant="contained"
           fullWidth
           onClick={() => onBook(hotel)}
           sx={{
             mt: 'auto',
-            py: 1,
+            py: 1.5,
+            borderRadius: 2,
+            textTransform: 'none',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+            '&:hover': {
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+            },
           }}
         >
           Book Now

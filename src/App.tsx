@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Container, 
   Box, 
   CssBaseline, 
   ThemeProvider, 
-  createTheme,
-  useMediaQuery,
-  useTheme
+  useTheme,
+  createTheme
 } from '@mui/material';
 import Header from './components/Header';
 import FilterBar from './components/FilterBar';
@@ -17,18 +16,71 @@ import { FilterOptions } from './types/hotel';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1a237e',
+      main: '#2563eb',
+      light: '#60a5fa',
+      dark: '#1e40af',
     },
     secondary: {
-      main: '#0d47a1',
+      main: '#0f172a',
+      light: '#1e293b',
+      dark: '#020617',
     },
+    background: {
+      default: '#f8fafc',
+      paper: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontWeight: 700,
+    },
+    h2: {
+      fontWeight: 600,
+    },
+    h3: {
+      fontWeight: 600,
+    },
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 600,
+    },
+    h6: {
+      fontWeight: 600,
+    },
+  },
+  shape: {
+    borderRadius: 12,
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#f8fafc',
           minHeight: '100vh',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 600,
+          padding: '8px 24px',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+          },
         },
       },
     },
@@ -37,75 +89,70 @@ const theme = createTheme({
 
 function App() {
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
-    priceRange: [0, 500],
-    rating: null,
-    amenities: [],
+    priceRange: [0, 1000],
+    minRating: 0,
     searchQuery: '',
+    selectedAmenities: [],
   });
 
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    setFilterOptions(newFilters);
+  };
+
+  const handleBookHotel = (hotel: any) => {
+    console.log('Booking hotel:', hotel);
+    // Implement booking logic here
+  };
+
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const filteredHotels = hotels.filter(hotel => {
     const matchesPrice = hotel.price >= filterOptions.priceRange[0] && 
                         hotel.price <= filterOptions.priceRange[1];
-    const matchesRating = !filterOptions.rating || hotel.rating >= filterOptions.rating;
-    const matchesAmenities = filterOptions.amenities.length === 0 || 
-                           filterOptions.amenities.every(amenity => 
-                             hotel.amenities.includes(amenity));
-    const matchesSearch = !filterOptions.searchQuery || 
-                         hotel.name.toLowerCase().includes(filterOptions.searchQuery.toLowerCase()) ||
+    const matchesRating = hotel.rating >= filterOptions.minRating;
+    const matchesSearch = hotel.name.toLowerCase().includes(filterOptions.searchQuery.toLowerCase()) ||
                          hotel.location.toLowerCase().includes(filterOptions.searchQuery.toLowerCase());
+    const matchesAmenities = filterOptions.selectedAmenities.length === 0 ||
+                            filterOptions.selectedAmenities.every(amenity => 
+                              hotel.amenities.includes(amenity));
 
-    return matchesPrice && matchesRating && matchesAmenities && matchesSearch;
+    return matchesPrice && matchesRating && matchesSearch && matchesAmenities;
   });
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column',
         minHeight: '100vh',
-        backgroundColor: '#f5f5f5',
+        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
       }}>
         <Header />
-        <Box sx={{ 
-          flex: 1,
-          py: { xs: 2, sm: 3 },
-          px: { xs: 1, sm: 2 },
-          backgroundColor: '#f5f5f5',
-        }}>
-          <Container 
-            maxWidth="lg" 
-            sx={{ 
-              display: 'flex',
-              flexDirection: { xs: 'column', md: 'row' },
-              gap: { xs: 2, md: 3 },
-              height: '100%',
-            }}
-          >
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', lg: 'row' },
+            gap: 4,
+            alignItems: { lg: 'flex-start' }
+          }}>
             <Box sx={{ 
-              width: { xs: '100%', md: '300px' },
+              width: { lg: '300px' },
               flexShrink: 0,
-              position: { xs: 'static', md: 'sticky' },
-              top: { md: 24 },
-              height: { xs: 'auto', md: 'fit-content' },
-              alignSelf: { md: 'flex-start' },
+              position: { lg: 'sticky' },
+              top: 24,
             }}>
               <FilterBar 
-                filterOptions={filterOptions}
-                onFilterChange={setFilterOptions}
+                filterOptions={filterOptions} 
+                onFilterChange={handleFilterChange} 
               />
             </Box>
-            <Box sx={{ 
-              flex: 1,
-              minWidth: 0, // Prevents flex item from overflowing
-            }}>
-              <HotelList hotels={filteredHotels} />
+            <Box sx={{ flexGrow: 1 }}>
+              <HotelList 
+                hotels={filteredHotels} 
+                onBookHotel={handleBookHotel} 
+              />
             </Box>
-          </Container>
-        </Box>
+          </Box>
+        </Container>
       </Box>
     </ThemeProvider>
   );

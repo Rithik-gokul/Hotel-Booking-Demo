@@ -1,17 +1,16 @@
 import React from 'react';
 import { 
   Paper, 
-  TextField, 
   Typography, 
+  TextField, 
   Slider, 
   Rating, 
   Box, 
   Chip,
   InputAdornment,
-  useTheme,
-  useMediaQuery
+  Divider,
 } from '@mui/material';
-import { Search as SearchIcon, AttachMoney as MoneyIcon, Star as StarIcon } from '@mui/icons-material';
+import { Search as SearchIcon, AttachMoney, Star } from '@mui/icons-material';
 import { FilterOptions } from '../types/hotel';
 
 interface FilterBarProps {
@@ -20,14 +19,17 @@ interface FilterBarProps {
 }
 
 const amenities = [
-  'Pool', 'Spa', 'Restaurant', 'Gym', 'Beach Access', 
-  'Free WiFi', 'Business Center', 'Bar', 'Hot Tub'
+  'WiFi',
+  'Pool',
+  'Spa',
+  'Gym',
+  'Restaurant',
+  'Parking',
+  'Air Conditioning',
+  'Breakfast',
 ];
 
-const FilterBar: React.FC<FilterBarProps> = ({ filterOptions, onFilterChange }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
+const FilterBar = ({ filterOptions, onFilterChange }: FilterBarProps) => {
   const handlePriceChange = (_event: Event, newValue: number | number[]) => {
     onFilterChange({
       ...filterOptions,
@@ -35,10 +37,10 @@ const FilterBar: React.FC<FilterBarProps> = ({ filterOptions, onFilterChange }) 
     });
   };
 
-  const handleRatingChange = (_event: React.SyntheticEvent, newValue: number | null) => {
+  const handleRatingChange = (_event: Event, newValue: number | number[]) => {
     onFilterChange({
       ...filterOptions,
-      rating: newValue,
+      minRating: newValue as number,
     });
   };
 
@@ -50,13 +52,13 @@ const FilterBar: React.FC<FilterBarProps> = ({ filterOptions, onFilterChange }) 
   };
 
   const handleAmenityToggle = (amenity: string) => {
-    const newAmenities = filterOptions.amenities.includes(amenity)
-      ? filterOptions.amenities.filter(a => a !== amenity)
-      : [...filterOptions.amenities, amenity];
+    const newAmenities = filterOptions.selectedAmenities.includes(amenity)
+      ? filterOptions.selectedAmenities.filter(a => a !== amenity)
+      : [...filterOptions.selectedAmenities, amenity];
     
     onFilterChange({
       ...filterOptions,
-      amenities: newAmenities,
+      selectedAmenities: newAmenities,
     });
   };
 
@@ -64,56 +66,64 @@ const FilterBar: React.FC<FilterBarProps> = ({ filterOptions, onFilterChange }) 
     <Paper 
       elevation={0}
       sx={{ 
-        p: { xs: 2, sm: 3 },
-        backgroundColor: '#fff',
-        border: '1px solid',
-        borderColor: 'divider',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
+        p: 3,
+        borderRadius: 3,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(0, 0, 0, 0.1)',
       }}
     >
-      <TextField
-        fullWidth
-        variant="outlined"
-        placeholder="Search hotels..."
-        value={filterOptions.searchQuery}
-        onChange={handleSearchChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon color="action" />
-            </InputAdornment>
-          ),
-        }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 1,
-          },
-        }}
-      />
+      <Typography variant="h6" gutterBottom fontWeight="600">
+        Filters
+      </Typography>
 
-      <Box>
-        <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <MoneyIcon color="primary" />
-          Price Range
-        </Typography>
-        <Slider
-          value={filterOptions.priceRange}
-          onChange={handlePriceChange}
-          valueLabelDisplay="auto"
-          min={0}
-          max={500}
+      <Box sx={{ mb: 3 }}>
+        <TextField
+          fullWidth
+          placeholder="Search hotels..."
+          value={filterOptions.searchQuery}
+          onChange={handleSearchChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="action" />
+              </InputAdornment>
+            ),
+          }}
           sx={{
-            color: 'primary.main',
-            '& .MuiSlider-thumb': {
-              width: 16,
-              height: 16,
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+              backgroundColor: 'background.paper',
             },
           }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle2" gutterBottom fontWeight="600">
+          Price Range
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          <AttachMoney color="primary" />
+          <Slider
+            value={filterOptions.priceRange}
+            onChange={handlePriceChange}
+            valueLabelDisplay="auto"
+            min={0}
+            max={1000}
+            sx={{
+              color: 'primary.main',
+              '& .MuiSlider-thumb': {
+                width: 16,
+                height: 16,
+                '&:hover, &.Mui-focusVisible': {
+                  boxShadow: '0 0 0 8px rgba(37, 99, 235, 0.16)',
+                },
+              },
+            }}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography variant="body2" color="text.secondary">
             ${filterOptions.priceRange[0]}
           </Typography>
@@ -123,44 +133,45 @@ const FilterBar: React.FC<FilterBarProps> = ({ filterOptions, onFilterChange }) 
         </Box>
       </Box>
 
-      <Box>
-        <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <StarIcon color="primary" />
+      <Divider sx={{ my: 3 }} />
+
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle2" gutterBottom fontWeight="600">
           Minimum Rating
         </Typography>
-        <Rating
-          value={filterOptions.rating || 0}
-          onChange={handleRatingChange}
-          precision={0.5}
-          sx={{
-            '& .MuiRating-iconFilled': {
-              color: 'primary.main',
-            },
-          }}
-        />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Star color="primary" />
+          <Rating
+            value={filterOptions.minRating}
+            onChange={handleRatingChange}
+            precision={0.5}
+            sx={{
+              '& .MuiRating-iconFilled': {
+                color: 'primary.main',
+              },
+            }}
+          />
+        </Box>
       </Box>
 
+      <Divider sx={{ my: 3 }} />
+
       <Box>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="subtitle2" gutterBottom fontWeight="600">
           Amenities
         </Typography>
-        <Box sx={{ 
-          display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: 1,
-          maxHeight: isMobile ? 'none' : '200px',
-          overflowY: isMobile ? 'visible' : 'auto',
-        }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           {amenities.map((amenity) => (
             <Chip
               key={amenity}
               label={amenity}
               onClick={() => handleAmenityToggle(amenity)}
-              color={filterOptions.amenities.includes(amenity) ? 'primary' : 'default'}
+              color={filterOptions.selectedAmenities.includes(amenity) ? 'primary' : 'default'}
               sx={{
                 borderRadius: 1,
+                transition: 'all 0.2s ease-in-out',
                 '&:hover': {
-                  backgroundColor: filterOptions.amenities.includes(amenity)
+                  backgroundColor: filterOptions.selectedAmenities.includes(amenity)
                     ? 'primary.dark'
                     : 'action.hover',
                 },
