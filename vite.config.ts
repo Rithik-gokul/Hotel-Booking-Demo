@@ -3,14 +3,10 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    port: 3000,
-    open: true
-  },
+  base: '/Hotel-Booking-Demo/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: true
-  },
-  base: '/Hotel-Booking-Demo/',
-}); 
+  }
+});
