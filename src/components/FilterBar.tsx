@@ -37,10 +37,10 @@ const FilterBar = ({ filterOptions, onFilterChange }: FilterBarProps) => {
     });
   };
 
-  const handleRatingChange = (_event: Event, newValue: number | number[]) => {
+  const handleRatingChange = (_event: React.SyntheticEvent<Element, Event>, newValue: number | null) => {
     onFilterChange({
       ...filterOptions,
-      minRating: newValue as number,
+      minRating: newValue || 0,
     });
   };
 

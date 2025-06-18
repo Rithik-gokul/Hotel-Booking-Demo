@@ -4,7 +4,6 @@ import {
   Box, 
   CssBaseline, 
   ThemeProvider, 
-  useTheme,
   createTheme
 } from '@mui/material';
 import Header from './components/Header';
@@ -103,8 +102,6 @@ function App() {
     console.log('Booking hotel:', hotel);
     // Implement booking logic here
   };
-
-  const theme = useTheme();
 
   const filteredHotels = hotels.filter(hotel => {
     const matchesPrice = hotel.price >= filterOptions.priceRange[0] && 
